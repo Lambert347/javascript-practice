@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body onload="writeX()">
+       <div class="mainForm">
+        <form id="submit" >
+            <label for="uid">User ID:</label>
+            <input type="text" id="uid" name="uid"><br><br>
+
+            <label for="fname">First Name:</label>
+            <input type="text" id="fname" name="fname"><br><br>
+            
+            <label for="lname">Last Name:</label>
+            <input type="text" id="lname" name="lname"><br><br>
+
+            <label for="birthday">Birthday:</label>
+            <input type="date" id="birthday" name="birthday"><br><br>
+
+            <input type="button" value="Accept" onclick="verifyForm()" id="accept-btn"></button>
+
+        </form>
+
+        <br>
+
+        <div class="invalidUser" style="display:none" id="invalidUser">
+            <span id="invalidText"></span>
+        </div>
+
+        <div class="displayDays" style="display: none" id="displayDays">
+            <span id="displayDaysText"></span>
+        </div>
+
+        <br>
+
+        <li class="writeXList" id="writeXList" style="list-style-type: none;">
+            
+        </li>
+
+       </div>
+        
+        <script>
+            const form = document.querySelector("form");
+
+            let el = document.getElementById("accept-btn");
+
+            el.addEventListener("click", function (event) {
+                event.preventDefault();
+            });
+
+            function verifyForm(){
+                let uID = checkUserId();
+                let fname = document.getElementById("fname").value;
+                let lname = document.getElementById("lname").value;
+                let birthday = document.getElementById("birthday").value;
+
+                if(uID === 'invalid'){
+                    showInvalid('UserID');
+                    hideDateDiff();
+                } else if(!fname){
+                    showInvalid('Fname');
+                    hideDateDiff();
+                } else if(!lname){
+                    showInvalid('Lname');
+                    hideDateDiff();
+                } else if(!birthday){
+                    showInvalid('Birthday');
+                    hideDateDiff();
+                }
+                else {
+                    hideInvalid();
+                    dateDiff(birthday, fname, lname);
+                }
+
+                
+            }
+
+            function checkUserId(){
+                let uid = document.getElementById("uid").value;
+                let hasUpper = false;
+                let hasLower = false;
+                let hasNumber = false;
+                let correctLength = false;
+                if (uid.length >= 8 && uid.length <= 12){
+                    correctLength = true;
+                }
+                
+                for(let i = 0; i < uid.length; i++){
+                    if (containsUpperCase(uid[i])){
+                        hasUpper = true;
+                    }
+                    if(containsLowerCase(uid[i])){
+                        hasLower = true;
+                    }
+                    if(parseInt(uid[i])){
+                        hasNumber = true;
+                    }
+                }
+
+                if(hasUpper === false || hasLower === false || hasNumber === false || correctLength === false){
+                    return "invalid";
+                }else {
+                    return "valid";
+                }
+            }
+
+            function containsUpperCase(userChar){
+                return Boolean(userChar.match(/[A-Z]/));
+            }
+
+            function containsLowerCase(userChar){
+                return Boolean(userChar.match(/[a-z]/));
+            }
+
+            function showInvalid(text){
+                document.getElementById('invalidUser').innerHTML = 'Invalid ' + text;
+                document.getElementById('invalidUser').style.display = "block";
+                document.getElementById('invalidUser').style.color = "red";
+            }
+
+            function hideInvalid(){
+                document.getElementById('invalidUser').style.display = "none";
+            }
+
+            function hideDateDiff(){
+                document.getElementById('displayDays').style.display = "none";
+            }
+
+            function dateDiff(birthday, fname, lname){
+                let date = new Date();
+                let convertedBirthday = new Date(birthday);
+
+                let differenceInTime = date.getTime() - convertedBirthday.getTime();
+
+                let differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+                let differenceAsInt = parseInt(differenceInDays);
+
+                if(differenceAsInt >= (365 * 18)){
+                    document.getElementById('displayDays').innerHTML = fname + ' ' + lname + ' you have been breathing for ' + differenceAsInt + ' days!';
+                    document.getElementById('displayDays').style.display = "block";
+                } else {
+                    document.getElementById('displayDays').innerHTML = 'You are probably not old enough to take this class!'
+                    document.getElementById('displayDays').style.display = "block";
+                }
+            }
+
+            function writeX(){
+                let totalCount = 20;
+                let ul = document.getElementById("writeXList");
+
+                for(let i = 0; i < 20; i++){
+                    let str = '';
+                    str = str.padStart(i,'x');
+                    let li = document.createElement("li");
+                    li.appendChild(document.createTextNode(str));
+                    ul.appendChild(li);
+                }
+                
+                
+            }
+
+        </script>
+    </body>
+</html>
